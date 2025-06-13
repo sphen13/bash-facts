@@ -6,7 +6,7 @@ source "$script_dir/lib/util.sh"
 
 
 if is_virtual; then
-	set_fact physical_or_virtual "virtual"
+    set_fact physical_or_virtual "virtual"
 else
-	set_fact physical_or_virtual "physical"
+    set_fact physical_or_virtual "physical"
 fi

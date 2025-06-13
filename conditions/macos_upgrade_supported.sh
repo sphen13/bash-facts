@@ -6,163 +6,163 @@ source "$script_dir/lib/util.sh"
 
 
 tahoe_upgrade_supported() {
-	if [[ $( macos_major ) -ge 16 ]]; then
-		echo "false"
-		return
-	fi
-	if is_virtual; then
-		echo "true"
-		return
-	fi
+    if [[ $( macos_major ) -ge 16 ]]; then
+        echo "false"
+        return
+    fi
+    if is_virtual; then
+        echo "true"
+        return
+    fi
 
-	case $( mac_model ) in
-	iMac20,1 | \
-	iMac20,2 | \
-	iMac21,1 | \
-	iMac21,2 | \
-	Mac13,1 | \
-	Mac13,2 | \
-	Mac14,2 | \
-	Mac14,3 | \
-	Mac14,5 | \
-	Mac14,6 | \
-	Mac14,7 | \
-	Mac14,8 | \
-	Mac14,9 | \
-	Mac14,10 | \
-	Mac14,12 | \
-	Mac14,13 | \
-	Mac14,14 | \
-	Mac14,15 | \
-	Mac15,3 | \
-	Mac15,4 | \
-	Mac15,5 | \
-	Mac15,6 | \
-	Mac15,7 | \
-	Mac15,8 | \
-	Mac15,9 | \
-	Mac15,10 | \
-	Mac15,11 | \
-	Mac15,12 | \
-	Mac15,13 | \
-	Mac15,14 | \
-	Mac16,1 | \
-	Mac16,2 | \
-	Mac16,3 | \
-	Mac16,5 | \
-	Mac16,6 | \
-	Mac16,7 | \
-	Mac16,8 | \
-	Mac16,9 | \
-	Mac16,10 | \
-	Mac16,11 | \
-	Mac16,12 | \
-	Mac16,13 | \
-	Mac16,15 | \
-	MacBookAir10,1 | \
-	MacBookPro16,1 | \
-	MacBookPro16,2 | \
-	MacBookPro16,3 | \
-	MacBookPro16,4 | \
-	MacBookPro17,1 | \
-	MacBookPro18,1 | \
-	MacBookPro18,2 | \
-	MacBookPro18,3 | \
-	MacBookPro18,4 | \
-	Macmini9,1 | \
-	MacPro7,1 | \
-	VirtualMac2,1)
-		echo "true"
-		;;
-	*)
-		echo "false"
-		;;
-	esac
+    case $( mac_model ) in
+    iMac20,1 | \
+    iMac20,2 | \
+    iMac21,1 | \
+    iMac21,2 | \
+    Mac13,1 | \
+    Mac13,2 | \
+    Mac14,2 | \
+    Mac14,3 | \
+    Mac14,5 | \
+    Mac14,6 | \
+    Mac14,7 | \
+    Mac14,8 | \
+    Mac14,9 | \
+    Mac14,10 | \
+    Mac14,12 | \
+    Mac14,13 | \
+    Mac14,14 | \
+    Mac14,15 | \
+    Mac15,3 | \
+    Mac15,4 | \
+    Mac15,5 | \
+    Mac15,6 | \
+    Mac15,7 | \
+    Mac15,8 | \
+    Mac15,9 | \
+    Mac15,10 | \
+    Mac15,11 | \
+    Mac15,12 | \
+    Mac15,13 | \
+    Mac15,14 | \
+    Mac16,1 | \
+    Mac16,2 | \
+    Mac16,3 | \
+    Mac16,5 | \
+    Mac16,6 | \
+    Mac16,7 | \
+    Mac16,8 | \
+    Mac16,9 | \
+    Mac16,10 | \
+    Mac16,11 | \
+    Mac16,12 | \
+    Mac16,13 | \
+    Mac16,15 | \
+    MacBookAir10,1 | \
+    MacBookPro16,1 | \
+    MacBookPro16,2 | \
+    MacBookPro16,3 | \
+    MacBookPro16,4 | \
+    MacBookPro17,1 | \
+    MacBookPro18,1 | \
+    MacBookPro18,2 | \
+    MacBookPro18,3 | \
+    MacBookPro18,4 | \
+    Macmini9,1 | \
+    MacPro7,1 | \
+    VirtualMac2,1)
+        echo "true"
+        ;;
+    *)
+        echo "false"
+        ;;
+    esac
 }
 
 
 sequoia_upgrade_supported() {
-	if [[ $( macos_major ) -ge 15 ]]; then
-		echo "false"
-		return
-	fi
-	if is_virtual; then
-		echo "true"
-		return
-	fi
+    if [[ $( macos_major ) -ge 15 ]]; then
+        echo "false"
+        return
+    fi
+    if is_virtual; then
+        echo "true"
+        return
+    fi
 
-	case $( mac_model ) in
-	iMac19,1 | \
-	iMac19,2 | \
-	iMac20,1 | \
-	iMac20,2 | \
-	iMac21,1 | \
-	iMac21,2 | \
-	iMacPro1,1 | \
-	Mac13,1 | \
-	Mac13,2 | \
-	Mac14,2 | \
-	Mac14,3 | \
-	Mac14,5 | \
-	Mac14,6 | \
-	Mac14,7 | \
-	Mac14,8 | \
-	Mac14,9 | \
-	Mac14,10 | \
-	Mac14,12 | \
-	Mac14,13 | \
-	Mac14,14 | \
-	Mac14,15 | \
-	Mac15,3 | \
-	Mac15,4 | \
-	Mac15,5 | \
-	Mac15,6 | \
-	Mac15,7 | \
-	Mac15,8 | \
-	Mac15,9 | \
-	Mac15,10 | \
-	Mac15,11 | \
-	Mac15,12 | \
-	Mac15,13 | \
-	MacBookAir10,1 | \
-	MacBookAir9,1 | \
-	MacBookPro15,1 | \
-	MacBookPro15,2 | \
-	MacBookPro15,3 | \
-	MacBookPro15,4 | \
-	MacBookPro16,1 | \
-	MacBookPro16,2 | \
-	MacBookPro16,3 | \
-	MacBookPro16,4 | \
-	MacBookPro17,1 | \
-	MacBookPro18,1 | \
-	MacBookPro18,2 | \
-	MacBookPro18,3 | \
-	MacBookPro18,4 | \
-	Macmini8,1 | \
-	Macmini9,1 | \
-	MacPro7,1 | \
-	VirtualMac2,1)
-		echo "true"
-		;;
-	*)
-		echo "false"
-		;;
-	esac
+    case $( mac_model ) in
+    iMac19,1 | \
+    iMac19,2 | \
+    iMac20,1 | \
+    iMac20,2 | \
+    iMac21,1 | \
+    iMac21,2 | \
+    iMacPro1,1 | \
+    Mac13,1 | \
+    Mac13,2 | \
+    Mac14,2 | \
+    Mac14,3 | \
+    Mac14,5 | \
+    Mac14,6 | \
+    Mac14,7 | \
+    Mac14,8 | \
+    Mac14,9 | \
+    Mac14,10 | \
+    Mac14,12 | \
+    Mac14,13 | \
+    Mac14,14 | \
+    Mac14,15 | \
+    Mac15,3 | \
+    Mac15,4 | \
+    Mac15,5 | \
+    Mac15,6 | \
+    Mac15,7 | \
+    Mac15,8 | \
+    Mac15,9 | \
+    Mac15,10 | \
+    Mac15,11 | \
+    Mac15,12 | \
+    Mac15,13 | \
+    MacBookAir10,1 | \
+    MacBookAir9,1 | \
+    MacBookPro15,1 | \
+    MacBookPro15,2 | \
+    MacBookPro15,3 | \
+    MacBookPro15,4 | \
+    MacBookPro16,1 | \
+    MacBookPro16,2 | \
+    MacBookPro16,3 | \
+    MacBookPro16,4 | \
+    MacBookPro17,1 | \
+    MacBookPro18,1 | \
+    MacBookPro18,2 | \
+    MacBookPro18,3 | \
+    MacBookPro18,4 | \
+    Macmini8,1 | \
+    Macmini9,1 | \
+    MacPro7,1 | \
+    VirtualMac2,1)
+        echo "true"
+        ;;
+    *)
+        echo "false"
+        ;;
+    esac
 }
 
 
 sonoma_upgrade_supported() {
-	if [[ $( macos_major ) -ge 14 ]]; then
-		echo "false"
-		return
-	fi
-	if is_virtual; then
-		echo "true"
-		return
-	fi
+    if [[ $( macos_major ) -ge 14 ]]; then
+        echo "false"
+        return
+    fi
+    if is_virtual; then
+        echo "true"
+        return
+    fi
 
-	case $( mac_model ) in
+    case $( mac_model ) in
     iMac19,1 | \
     iMac19,2 | \
     iMac20,1 | \
@@ -212,27 +212,27 @@ sonoma_upgrade_supported() {
     Macmini8,1 | \
     Macmini9,1 | \
     MacPro7,1 | \
-	VirtualMac2,1)
-		echo "true"
-		;;
-	*)
-		echo "false"
-		;;
-	esac
+    VirtualMac2,1)
+        echo "true"
+        ;;
+    *)
+        echo "false"
+        ;;
+    esac
 }
 
 
 ventura_upgrade_supported() {
-	if [[ $( macos_major ) -ge 13 ]]; then
-		echo "false"
-		return
-	fi
-	if is_virtual; then
-		echo "true"
-		return
-	fi
+    if [[ $( macos_major ) -ge 13 ]]; then
+        echo "false"
+        return
+    fi
+    if is_virtual; then
+        echo "true"
+        return
+    fi
 
-	case $( mac_model ) in
+    case $( mac_model ) in
     iMac18,1 | \
     iMac18,2 | \
     iMac18,3 | \
@@ -272,27 +272,27 @@ ventura_upgrade_supported() {
     Macmini8,1 | \
     Macmini9,1 | \
     MacPro7,1 | \
-	VirtualMac2,1)
-		echo "true"
-		;;
-	*)
-		echo "false"
-		;;
-	esac
+    VirtualMac2,1)
+        echo "true"
+        ;;
+    *)
+        echo "false"
+        ;;
+    esac
 }
 
 
 monterey_upgrade_supported() {
-	if [[ $( macos_major ) -ge 12 ]]; then
-		echo "false"
-		return
-	fi
-	if is_virtual; then
-		echo "true"
-		return
-	fi
+    if [[ $( macos_major ) -ge 12 ]]; then
+        echo "false"
+        return
+    fi
+    if is_virtual; then
+        echo "true"
+        return
+    fi
 
-	case $( mac_model ) in
+    case $( mac_model ) in
     MacBook10,1 | \
     MacBook9,1 | \
     MacBookAir7,1 | \
@@ -332,13 +332,13 @@ monterey_upgrade_supported() {
     iMac20,1 | \
     iMac20,2 | \
     iMacPro1, | \
-	VirtualMac2,1)
-		echo "true"
-		return
-		;;
-	esac
+    VirtualMac2,1)
+        echo "true"
+        return
+        ;;
+    esac
 
-	case $( board_id ) in
+    case $( board_id ) in
     Mac-06F11F11946D27C5 | \
     Mac-06F11FD93F0323C5 | \
     Mac-0CFF9C7C2B63DF8D | \
@@ -382,12 +382,12 @@ monterey_upgrade_supported() {
     Mac-F60DEB81FF30ACF6 | \
     Mac-FFE5EF870D7BA81A | \
     VMM-x86_64)
-		echo "true"
-		return
-		;;
-	esac
+        echo "true"
+        return
+        ;;
+    esac
 
-	case $( hw_target ) in
+    case $( hw_target ) in
     J132AP | \
     J137AP | \
     J140AAP | \
@@ -419,26 +419,26 @@ monterey_upgrade_supported() {
     VMM-x86_64 | \
     X589AMLUAP | \
     X86LEGACYAP)
-		echo "true"
-		return
-		;;
-	esac
+        echo "true"
+        return
+        ;;
+    esac
 
-	echo "false"
+    echo "false"
 }
 
 
 bigsur_upgrade_supported() {
-	if [[ $( macos_major ) -ge 11 ]]; then
-		echo "false"
-		return
-	fi
-	if is_virtual; then
-		echo "true"
-		return
-	fi
+    if [[ $( macos_major ) -ge 11 ]]; then
+        echo "false"
+        return
+    fi
+    if is_virtual; then
+        echo "true"
+        return
+    fi
 
-	case $( mac_model ) in
+    case $( mac_model ) in
     MacBook10,1 | \
     MacBook8,1 | \
     MacBook9,1 | \
@@ -478,13 +478,13 @@ bigsur_upgrade_supported() {
     iMac19,1 | \
     iMac19,2 | \
     iMacPro1,1 | \
-	VirtualMac2,1)
-		echo "true"
-		return
-		;;
-	esac
+    VirtualMac2,1)
+        echo "true"
+        return
+        ;;
+    esac
 
-	case $( board_id ) in
+    case $( board_id ) in
     Mac-226CB3C6A851A671 | \
     Mac-36B6B6DA9CFCD881 | \
     Mac-112818653D3AABFC | \
@@ -549,15 +549,15 @@ bigsur_upgrade_supported() {
     Mac-E43C1C25D4880AD6 | \
     Mac-53FDB3D8DB8CA971 | \
     VMM-x86_64)
-		echo "true"
-		return
-		;;
-	esac
+        echo "true"
+        return
+        ;;
+    esac
 
-	echo "false"
+    echo "false"
 }
 
 
 for f in $( declare -F | cut -d" " -f3- | grep "upgrade_supported" ); do
-	set_fact "$f" bool $( $f )
+    set_fact "$f" bool $( $f )
 done
