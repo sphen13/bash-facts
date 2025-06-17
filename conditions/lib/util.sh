@@ -59,10 +59,11 @@ set_fact() {
     local key="$1"
     local value_or_type="$2"
 
-    #local ci_plist="$( get_munki_dir )/ConditionalItems.plist"
-    local script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-    local ci_plist="$script_dir/../../ConditionalItems.plist"
-    echo "👹 Writing to $( realpath "$ci_plist" )"
+    local ci_plist="$( get_munki_dir )/ConditionalItems.plist"
+    # For testing:
+    #local script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+    #local ci_plist="$script_dir/../../ConditionalItems.plist"
+    #echo "👹 Writing to $( realpath "$ci_plist" )"
 
     case "$value_or_type" in
     string|integer|real|bool)
