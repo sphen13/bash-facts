@@ -14,6 +14,7 @@ BFACTS_INIT=1
 : "${BFACTS_RECORD_ERRORS_IN_LOG:=1}"
 : "${BFACTS_SYSLOG:=1}"
 : "${BFACTS_SYSLOG_TAG:=bash-facts}"
+: "${BFACTS_AUDIT:=1}"
 
 # Identity (used for logging)
 _bfacts_script_name="${BFACTS_SCRIPT_NAME_OVERRIDE:-$(basename "${BASH_SOURCE[1]:-${0}}")}"
@@ -39,11 +40,78 @@ readonly _BFACTS_PLIST="${_BFACTS_DIR}/ConditionalItems.plist"
 readonly _BFACTS_LOG_DIR="${_BFACTS_DIR}/Logs/conditions"
 readonly _BFACTS_LOCKDIR="${_BFACTS_DIR}/.ConditionalItems.lock.d"
 readonly _PLISTBUDDY="/usr/libexec/PlistBuddy"
+readonly _BFACTS_COND_LOG="${_BFACTS_LOG_DIR}/_conditions.log"
 /bin/mkdir -p "$_BFACTS_LOG_DIR" 2>/dev/null || true
 
 # Logging
 _bfacts_ts()   { /bin/date -u +'%Y-%m-%dT%H:%M:%SZ'; }
 _bfacts_warn() { printf '[%s] WARN: %s\n' "$(_bfacts_ts)" "$*" >&2; }
+_bfacts_audit() {  # _bfacts_audit EVENT STATUS ELAPSED_SECS
+  [[ "$BFACTS_AUDIT" != "1" ]] && return 0
+  local event="$1" status="${2:-}" elapsed="${3:-}" ts="$(_bfacts_ts)"
+  # fields: ts  event  script  pid  elapsed  status
+  /usr/bin/lockf -k "${_BFACTS_COND_LOG}.lock" /bin/sh -c \
+    "/usr/bin/printf '%s\t%s\t%s\t%s\t%s\t%s\n' '$ts' '$event' '$_bfacts_script_base' '$$' '${elapsed}' '${status}' >> '$_BFACTS_COND_LOG'"
+}
+
+# stopwatch + START line now (on source)
+_BFACTS_START_TS="$(/bin/date +%s)"
+_bfacts_elapsed() { echo $(( $(/bin/date +%s) - _BFACTS_START_TS )); }
+_bfacts_audit START "" 0
+
+if [[ "$BFACTS_DISABLE_TRAPS" != "1" ]]; then
+  # flags for EXIT summary
+  _BFACTS_ALREADY_LOGGED=0
+  _BFACTS_HAD_ERR=0
+
+  # optional: self-watchdog; if set, TERM yourself a bit before the parent might
+  # (set in env or LaunchDaemon: e.g., BFACTS_MAX_RUNTIME_SECS=170)
+  if [[ -n "${BFACTS_MAX_RUNTIME_SECS:-}" && "$BFACTS_MAX_RUNTIME_SECS" =~ ^[0-9]+$ ]]; then
+    ( /bin/sleep "$BFACTS_MAX_RUNTIME_SECS"; /bin/kill -TERM $$ ) >/dev/null 2>&1 &
+    disown || true
+  fi
+
+  # polite signal handlers: log + END + exit 0 so Munki sees a clean exit
+  _bfacts_on_term() {
+    local e="$(_bfacts_elapsed)"
+    record_condition_error "received SIGTERM after ${e}s"
+    _bfacts_audit END TERM "$e"
+    _BFACTS_ALREADY_LOGGED=1
+    exit 0
+  }
+  _bfacts_on_hup()  {
+    local e="$(_bfacts_elapsed)"
+    record_condition_error "received SIGHUP after ${e}s"
+    _bfacts_audit END HUP "$e"
+    _BFACTS_ALREADY_LOGGED=1
+    exit 0
+  }
+  _bfacts_on_int()  {
+    local e="$(_bfacts_elapsed)"
+    record_condition_error "received SIGINT after ${e}s"
+    _bfacts_audit END INT "$e"
+    _BFACTS_ALREADY_LOGGED=1
+    exit 0
+  }
+
+  trap '_bfacts_on_term' TERM
+  trap '_bfacts_on_hup'  HUP
+  trap '_bfacts_on_int'  INT
+
+  # note that a command failed; EXIT will summarize and force 0
+  trap 'ec=$?; _BFACTS_HAD_ERR=1; record_condition_error "exit ${ec} (ERR trap)"; true' ERR
+
+  # single END line with duration + reason (ok|err) unless a signal already logged END
+  trap '
+    ec=$?
+    if (( _BFACTS_ALREADY_LOGGED == 0 )); then
+      reason=ok
+      (( ec != 0 || _BFACTS_HAD_ERR == 1 )) && reason=err
+      _bfacts_audit END "$reason" "$(_bfacts_elapsed)"
+    fi
+    exit 0
+  ' EXIT
+fi
 
 # Timeouts (portable)
 with_timeout() { local t="$1"; shift; /usr/bin/perl -e '$SIG{ALRM}=sub{exit 124}; alarm shift @ARGV; exec @ARGV;' "$t" "$@"; }
@@ -166,9 +234,3 @@ record_condition_error() {
   [[ "$BFACTS_RECORD_ERRORS_IN_LOG" == "1" ]] && printf '%s %s\n' "$(_bfacts_ts)" "$msg" >> "${_BFACTS_LOG_DIR}/${_bfacts_script_base}.log" 2>/dev/null || true
   [[ "$BFACTS_SYSLOG" == "1" ]] && /usr/bin/logger -t "$BFACTS_SYSLOG_TAG[$_bfacts_script_base]" -- "$msg" 2>/dev/null || true
 }
-
-# Traps to keep Munki happy (swallow nonzero exits)
-if [[ "$BFACTS_DISABLE_TRAPS" != "1" ]]; then
-  trap 'ec=$?; (( ec != 0 )) && record_condition_error "exit $ec (ERR trap)"; true' ERR
-  trap 'ec=$?; (( ec != 0 )) && record_condition_error "exit $ec (EXIT trap)"; exit 0' EXIT
-fi
